@@ -7,6 +7,7 @@ const altLog = (function() {
   "use strict";
 
   return {
+    // TODO: Implementar histórico usando Map ao invés de Set
     _reportHistory: new Set(),
     _historyMaxSize: 1000,
 
