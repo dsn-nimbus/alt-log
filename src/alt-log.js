@@ -39,10 +39,18 @@ const altLog = (function() {
     },
 
     /**
-     * Ambiente padrão de execução do alt-log
-     * @type {string}
+     * Obtém o ambiente atual
+     * @return {string} ambiente corrente
      */
-    get defaultEnv() {
+     get currentEnv() {
+      let url = window.location.href;
+      if (this._validarEndereco("*-dev.alterdata.*", url)) {
+        return "dev";
+      }
+      if (this._validarEndereco("*-hml.alterdata.*", url)) {
+        return "hml";
+      }
+
       return "prod";
     },
 
@@ -83,7 +91,7 @@ const altLog = (function() {
      * @type {string}
      */
     get env() {
-      return this._env || this.defaultEnv;
+      return this._env || this.currentEnv;
     },
 
     /**
@@ -193,6 +201,17 @@ const altLog = (function() {
       let tipoSct = "|| " + report.tipo.toUpperCase() + " || ";
       let msgSct = !report.msg ? "" : "Descrição: " + report.msg;
       return dataSct + horaSct + tipoSct + msgSct;
+    },
+
+    /**
+    * Valida uma URL e informa se corresponde ao padrão esperado
+    * @param  {string} padraoEsperado  glob do padrão esperado
+    * @param  {string} url             url a ser validada
+    * @return {bool}                   resultado da validação. True se for válido.
+    */
+    _validarEndereco(padraoEsperado, url) {
+     let re = new RegExp(padraoEsperado.replace(/([.?+^$[\]\\(){}|\/-])/g, "\\$1").replace(/\*/g, '.*'));
+     return re.test(url);
     }
   };
 }());
